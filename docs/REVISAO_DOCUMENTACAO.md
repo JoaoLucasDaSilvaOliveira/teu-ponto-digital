@@ -22,6 +22,8 @@ A tabela a seguir descreve os achados da revisão original; os documentos foram 
 
 ## Resultado
 
+Atualização em 30/10/2026: os perfis de acesso passam a ser Gestor, Supervisor, Colaborador e Contabilidade/DP, sem Gestor Master separado. O gestor define as permissões da Contabilidade/DP por ação e por CNPJ, incluindo possibilidades como exportar PDF, criar horários e criar jornadas; ver RF-06, RF-06.1 e RF-19. Esta decisão resolve a ausência desse perfil e a origem de suas permissões. A matriz completa de ações e as regras de aprovação do próprio ajuste e acesso a atestados continuam pendentes.
+
 A visão do produto é consistente: controle de jornada multiempresa, registro, tratamento, apuração e integração com folha. Os documentos ainda não formam uma especificação inequívoca para implementação. Resolver primeiro enquadramento regulatório, experiência offline e políticas de apuração; depois consolidar as instruções no AGENTS.md.
 
 O checkout contém README e documentação, sem aplicação disponível para confrontar os requisitos com comportamento implementado. Há exclusões preexistentes em identity_service; esta revisão não as altera.

@@ -9,7 +9,8 @@ Este documento descreve as funcionalidades diretas do sistema de ponto digital "
 - **RF-03:** O sistema deve permitir o cadastro de empresas (Empregador), vinculando-as a um ou mais perfis de Gestores, coletando obrigatoriamente: CNPJ, Razão Social, Apelido, Responsável Legal e Certificado Digital (A1/A3).
 - **RF-04:** O sistema deve exigir, durante o fluxo de login de usuários com múltiplos vínculos, a seleção do contexto da empresa que desejam operar na sessão ativa, garantindo o isolamento dos dados.
 - **RF-05:** O sistema deve permitir o cadastro de funcionários (dentro do contexto da empresa selecionada), coletando: CPF, Nome Completo e Data de Nascimento.
-- **RF-06:** O sistema deve suportar uma estrutura hierárquica baseada em perfis de acesso (RBAC): Gestor Master (múltiplas empresas), Gestores (acesso total da empresa logada), Supervisores (acesso ao seu setor/time) e Colaboradores (acesso apenas aos próprios dados).
+- **RF-06:** O sistema deve suportar os perfis de acesso Gestor (administração da empresa autorizada), Supervisor (acesso ao seu setor/time), Colaborador (acesso aos próprios dados) e Contabilidade/DP (acesso conforme permissões concedidas pelo gestor da empresa). Um gestor pode administrar múltiplos CNPJs mediante vínculos distintos, conforme RF-01; não há um perfil separado de Gestor Master.
+  - **RF-06.1:** O gestor de cada empresa deve definir as permissões concedidas à Contabilidade/DP naquele CNPJ, por ação, incluindo, por exemplo, exportar PDF, criar horários e criar jornadas. O perfil de Contabilidade/DP não concede essas capacidades automaticamente. As permissões concedidas em uma empresa não se estendem às demais; o servidor deve verificar o vínculo e a permissão da ação no CNPJ correspondente, conforme o ADR 0004.
 - **RF-07:** O sistema deve exigir uma validação de identidade via confirmação de e-mail (Magic Link ou OTP) no primeiro acesso do usuário.
 - **RF-08:** O sistema deve implementar gerenciamento de sessão de longa duração (ex: via Refresh Tokens) para manter o aparelho logado após a primeira autenticação bem-sucedida, minimizando atritos diários de login.
 
@@ -38,7 +39,7 @@ Este documento descreve as funcionalidades diretas do sistema de ponto digital "
 - **RF-18:** O sistema deve calcular automaticamente o saldo diário do colaborador, confrontando as marcações realizadas com a jornada cadastrada.
 
 ## Épico 5: Integração Contábil e Relatórios
-- **RF-19:** O sistema deve possuir uma interface dedicada ao Contador/Escritório de Contabilidade para o mapeamento (De-Para) de dados.
+- **RF-19:** O sistema deve possuir uma interface dedicada à Contabilidade/DP, incluindo Contador/Escritório de Contabilidade, para o mapeamento (De-Para) de dados. O acesso ao mapeamento e às demais funcionalidades deve respeitar as permissões concedidas pelo gestor de cada empresa, conforme RF-06.1.
 - **RF-20:** O sistema deve permitir a vinculação do "código do funcionário" interno do Teu Ponto com o código de matrícula do sistema de folha de pagamento.
 - **RF-21:** O sistema deve permitir o cadastro e vinculação de Rubricas (ex: "Hora Extra 50%", "Atraso", "Adicional Noturno") para compatibilidade com o sistema contábil.
 - **RF-22:** O sistema deve exportar os dados apurados em um formato de integração compatível com hardwares/softwares de folha de pagamento de mercado (foco inicial: Domínio Sistemas, utilizando importação .TXT).
