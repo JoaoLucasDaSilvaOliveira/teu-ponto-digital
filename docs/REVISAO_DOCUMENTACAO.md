@@ -24,6 +24,8 @@ A tabela a seguir descreve os achados da revisão original; os documentos foram 
 
 Atualização em 30/10/2026: os perfis de acesso passam a ser Gestor, Supervisor, Colaborador e Contabilidade/DP, sem Gestor Master separado. O gestor define as permissões da Contabilidade/DP por ação e por CNPJ, incluindo possibilidades como exportar PDF, criar horários e criar jornadas; ver RF-06, RF-06.1 e RF-19. Esta decisão resolve a ausência desse perfil e a origem de suas permissões. A matriz completa de ações e as regras de aprovação do próprio ajuste e acesso a atestados continuam pendentes.
 
+Na mesma data, foi aprovado o [plano inicial do identity-service](PLANO_IMPLEMENTACAO_IDENTITY_SERVICE.md). RF-03 passa a exigir nome e CPF do responsável legal e delimita o certificado ao envio de A1, com A3 futuro; a custódia técnica será detalhada antes de implementar o upload. RF-05.1 define matrícula interna aleatória, reutilizável no coletor, e RF-20 preserva a matrícula da folha como referência externa. O plano separa usuário de funcionário e de vínculo com empresa. As decisões não resolvem signatários dos artefatos, todo o onboarding, a matriz completa de permissões nem os fluxos biométricos e de mudança de modalidade.
+
 A visão do produto é consistente: controle de jornada multiempresa, registro, tratamento, apuração e integração com folha. Os documentos ainda não formam uma especificação inequívoca para implementação. Resolver primeiro enquadramento regulatório, experiência offline e políticas de apuração; depois consolidar as instruções no AGENTS.md.
 
 O checkout contém README e documentação, sem aplicação disponível para confrontar os requisitos com comportamento implementado. Há exclusões preexistentes em identity_service; esta revisão não as altera.
