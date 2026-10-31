@@ -58,7 +58,7 @@ As regras desta seção se aplicam ao repositório inteiro, incluindo `services/
 
 ### Fluxo
 
-1. Parta da `main` atualizada e crie uma branch para a funcionalidade ou correção, vinculando o trabalho à issue correspondente quando existir. Exemplo: `feat/identity-service/entidades-dominio`.
+1. Parta da `main` atualizada e crie uma branch para a funcionalidade ou correção, vinculando o trabalho à issue correspondente quando existir. Quando houver issue pai e subissues, use uma única branch para a issue pai e desenvolva todas as suas subissues nessa mesma branch, rastreando cada entrega nos commits. Nomeie a branch pelo escopo da issue pai; por exemplo, `feat/identity-service/dominio-identidades-cadastros` para a issue #2.
 2. Desenvolva e execute as verificações pertinentes na branch de trabalho. Mantenha `main` e `development` como destinos de integração, sem desenvolver diretamente nelas.
 3. Integre o trabalho em `development` para homologação e testes no ambiente próprio. Homologação não equivale a liberação para produção.
 4. Após homologação e revisão, abra um pull request da própria branch de trabalho para `main`. Promova somente a funcionalidade ou correção homologada, sem incluir outras mudanças presentes em `development`.
