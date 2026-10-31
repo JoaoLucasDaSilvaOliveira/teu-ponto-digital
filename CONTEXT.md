@@ -6,13 +6,17 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Tenant**: Contexto de um CNPJ, com dados, permissões e configurações próprios. Um gestor pode ter acesso a vários tenants mediante vínculos distintos.
 
+**Empresa**: Cadastro do empregador identificado por um CNPJ, correspondente a um tenant no produto.
+
+**Responsável legal**: Pessoa identificada por nome e CPF no cadastro da empresa. Essa condição é distinta de possuir identidade de acesso ou perfil de Gestor.
+
 **Gestor**: Pessoa autorizada a administrar um ou mais contextos de empresa, conforme as permissões em cada vínculo.
 
 **Usuário**: Identidade de acesso à aplicação. Pode ter vínculos distintos com empresas e ser associado a um cadastro de funcionário.
 
 **Funcionário**: Cadastro do trabalhador no contexto de uma empresa. Pode existir antes de sua associação a um usuário de acesso.
 
-**Vínculo com empresa**: Relação que autoriza um usuário a atuar em um CNPJ, com perfil, permissões e escopo próprios daquele contexto.
+**Vínculo com empresa**: Relação que autoriza um usuário a atuar em um CNPJ, com perfil, permissões e escopo próprios daquele contexto. É distinto do vínculo empregatício do trabalhador.
 
 **Supervisor**: Perfil autorizado a atuar sobre o setor ou time sob sua supervisão no contexto de uma empresa.
 

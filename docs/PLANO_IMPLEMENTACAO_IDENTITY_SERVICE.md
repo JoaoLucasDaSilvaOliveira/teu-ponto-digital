@@ -30,6 +30,8 @@ API, persistência, login completo, tokens, integrações, upload e armazenament
 
 ## Modelo inicial a especificar
 
+Os limites de responsabilidade, os dados fornecidos aos demais módulos e a rastreabilidade da etapa 1 estão detalhados em [Limites e responsabilidades do identity-service](LIMITES_IDENTITY_SERVICE.md), entrega documental da issue #3. Esse detalhamento não antecipa a implementação nem encerra as pendências das etapas seguintes.
+
 | Conceito | Dados principais | Comportamentos previstos |
 |---|---|---|
 | Empresa | ID/tenant, CNPJ, razão social, apelido, responsável e referência do A1 | Alterar cadastro, definir responsável, associar referência de certificado |
