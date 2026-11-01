@@ -30,6 +30,8 @@ API, persistência, login completo, tokens, integrações, upload e armazenament
 
 ## Modelo inicial a especificar
 
+O detalhamento da issue #4 está em [Contratos de domínio](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md), ainda em elaboração. As mudanças de modelo ali identificadas precisam ser conciliadas antes de tratar os contratos como prontos para implementação.
+
 Os limites de responsabilidade, os dados fornecidos aos demais módulos e a rastreabilidade da etapa 1 estão detalhados em [Limites e responsabilidades do identity-service](LIMITES_IDENTITY_SERVICE.md), entrega documental da issue #3. Esse detalhamento não antecipa a implementação nem encerra as pendências das etapas seguintes.
 
 | Conceito | Dados principais | Comportamentos previstos |

@@ -26,7 +26,7 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Setor**: Agrupamento de funcionários de uma mesma empresa, usado para delimitar o escopo de supervisão.
 
-**Matrícula interna**: Código aleatório e não sequencial atribuído pela aplicação ao cadastro do funcionário. Pode ser apresentado no coletor coletivo para declarar a identidade.
+**Matrícula interna**: Código aleatório e não sequencial de seis caracteres, com dígitos de 0 a 9 e letras de A a Z em maiúsculas, atribuído pela aplicação ao cadastro do funcionário. Pode ser apresentado no coletor coletivo para declarar a identidade.
 
 **Matrícula da folha**: Código do funcionário no sistema externo de folha, relacionado à matrícula interna por um mapeamento de integração.
 
