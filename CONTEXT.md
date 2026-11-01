@@ -12,7 +12,7 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Responsável legal**: Pessoa identificada por nome e CPF, designada no cadastro da empresa. Essa condição é distinta de possuir identidade de acesso ou perfil de Gestor.
 
-**Gestor**: Pessoa autorizada a administrar um ou mais contextos de empresa, conforme as permissões em cada vínculo.
+**Gestor**: Perfil de administração da empresa no CNPJ da conta, incluindo concessão de ações aos demais perfis. Não inclui automaticamente as capacidades próprias do Colaborador nem determina o enquadramento trabalhista da pessoa.
 
 **Usuário**: Conta de acesso de uma pessoa em um único CNPJ, com e-mail, confirmação e situação de acesso próprios. Contas com o mesmo e-mail em empresas diferentes são independentes.
 
@@ -20,7 +20,7 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Vínculo com empresa**: Relação que autoriza um usuário a atuar em um CNPJ, com perfil, permissões e escopo próprios daquele contexto. É distinto do vínculo empregatício do trabalhador.
 
-**Supervisor**: Perfil autorizado a atuar sobre o setor ou time sob sua supervisão no contexto de uma empresa.
+**Supervisor**: Perfil que inclui as capacidades próprias do Colaborador e ações sobre seus subordinados conforme concessões do Gestor no CNPJ. Seus próprios pedidos de ajuste dependem de avaliação por Gestor.
 
 **Colaborador**: Perfil de acesso aos próprios dados e às operações do trabalhador, como registrar ponto e solicitar ajustes.
 

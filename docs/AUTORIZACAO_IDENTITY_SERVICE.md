@@ -1,6 +1,6 @@
 # Perfis, permissões e escopos — identity-service
 
-Especificação da [issue #5](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/5), parte da issue pai #2. Em elaboração: as invariantes comuns abaixo já decorrem das fontes aceitas; composição de perfis, escopo do Supervisor e delegação administrativa estão em esclarecimento. Não representa implementação Go nem autorização de produção.
+Especificação da [issue #5](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/5), parte da issue pai #2. Em elaboração: invariantes comuns e decisões abaixo já foram esclarecidas; representação da equipe, combinação de Gestor com Colaborador e concessões de atestados continuam em esclarecimento. Não representa implementação Go nem autorização de produção.
 
 Fontes: [RF-01, RF-04, RF-06, RF-06.1, RF-13 e RF-19](REQUISITOS_FUNCIONAIS.md), [contratos da issue #4](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md), [limites](LIMITES_IDENTITY_SERVICE.md), [plano](PLANO_IMPLEMENTACAO_IDENTITY_SERVICE.md), [vocabulário](../CONTEXT.md), ADRs [0004](adr/0004-isolamento-por-cnpj.md) e [0007](adr/0007-contas-por-cnpj-e-recontratacao.md) e [arquitetura do backend](../services/docs/adr/0001-arquitetura-backend.md). A [revisão de coerência](REVISAO_DOCUMENTACAO.md) mantém as lacunas ainda não resolvidas.
 
@@ -13,7 +13,23 @@ Fontes: [RF-01, RF-04, RF-06, RF-06.1, RF-13 e RF-19](REQUISITOS_FUNCIONAIS.md),
 - Ausência de concessão, ação desconhecida, recurso incompatível, referência não resolvida ou escopo insuficiente resultam em rejeição. Não interpretar ação inexistente como ação genérica permitida.
 - Contabilidade/DP só executa ações explicitamente concedidas pelo gestor daquele CNPJ. Exportar PDF, criar horários e criar jornadas são concessões distintas; uma não implica a outra.
 - Preservar o vínculo entre ação e recurso concreto, inclusive em arquivos, exportações, jobs e filas. Consulta/listagem precisa restringir resultados; autorizar a tela não autoriza todos os registros retornados.
-- Autoaprovação de ajuste e acesso ao conteúdo de atestados continuam pendentes e são rejeitados nesta rodada. Um perfil administrativo não resolve essas pendências implicitamente.
+- Autoaprovação de ajuste é proibida, inclusive ao acumular perfis. Nenhum perfil administrativo ou concessão permite ignorar essa proibição. Acesso ao conteúdo de atestados continua sem autorização até fechar as concessões específicas, distintas das ações genéricas de ajuste/relatório.
+
+## Decisões esclarecidas sobre os perfis
+
+- **Colaborador:** ações sobre os próprios registros, incluindo marcação, consulta/dashboard próprio, solicitação de relatório e de ajuste. As precondições da coleta, o cadastro ativo e a associação da conta ao funcionário continuam necessários.
+- **Supervisor:** inclui automaticamente as capacidades próprias do Colaborador, por composição de comportamento, sem exigir duas identidades ou duplicar dados pessoais. Deve ter cadastro de funcionário para essas ações próprias; isso não lhe permite agir como colaborador de outro funcionário.
+- **Gestão da equipe:** o Gestor concede ao Supervisor as ações permitidas sobre subordinados. O perfil sozinho não concede administração irrestrita. O catálogo deve contemplar administração de cadastros de subordinados, horários/jornadas da equipe, consulta/dashboard, relatórios e avaliação de ajustes; cada ação depende da concessão e do recurso dentro da equipe.
+- **Hierarquia de decisões:** Supervisor pode avaliar ajustes de subordinados se autorizado; seu próprio pedido deve ser avaliado por Gestor. Outro perfil ou outra conta da mesma Pessoa não pode ser usado para decidir o próprio pedido. A identidade cadastral da Pessoa e as referências históricas precisam ser consideradas, não apenas comparar IDs de login.
+- **Lançamentos sobre si:** Supervisor não pode lançar/decidir abonos ou outros lançamentos administrativos sobre si, mesmo possuindo concessão sobre subordinados. Solicitar ajuste próprio continua uma ação distinta de avaliá-lo.
+- **Delegação:** Gestor administra acessos e concede ações a Supervisor e Contabilidade/DP no CNPJ. Esses perfis não concedem acesso, não se promovem a Gestor e não delegam suas concessões a terceiros. Responsabilização/auditoria não substitui a verificação prévia do escopo.
+- **Gestor:** o perfil não inclui automaticamente as capacidades próprias de Colaborador. A possibilidade de combinação explícita dos dois perfis está sendo esclarecida; a existência do perfil não dispensa um trabalhador de controle de jornada por si só.
+
+CRUD de subordinados não permite apagar registros originais ou histórico. Encerramento de cadastro deve seguir os contratos da #4. Cadastro pessoal e de funcionário não equivale a administrar conta de acesso, vínculo, perfil ou concessão; estas últimas ações permanecem do Gestor. Operações que alterem recursos compartilhados precisam verificar todo o alcance da alteração, sem atingir outra equipe por referência indireta.
+
+### Perfil do produto e enquadramento trabalhista
+
+O perfil Gestor é autorização administrativa, não uma classificação jurídica. O [art. 62, II e parágrafo único da CLT](https://www2.camara.leg.br/legin/fed/declei/1940-1949/decreto-lei-5452-1-maio-1943-415500-normaatualizada-pe.html) trata do exercício de cargo de gestão e da condição remuneratória ali prevista; não estabelece dispensa universal de controle de jornada para qualquer pessoa chamada gerente. Não derivar isenção de jornada do nome do perfil. A especificação do enquadramento individual e suas consequências para apuração continuam na área de jornada, fora desta issue.
 
 ## Autoridade dos dados e limites
 
