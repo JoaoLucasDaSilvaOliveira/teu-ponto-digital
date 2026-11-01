@@ -8,7 +8,7 @@ Este detalhamento aplica as decisões do plano, o [vocabulário](../CONTEXT.md),
 
 O `identity-service` é a fonte dos cadastros de identidades de acesso, empresas, funcionários, setores e vínculos de autorização. Seu módulo de domínio concentra as invariantes desses conceitos; os futuros casos de uso coordenam referências, unicidade e autorização com dados autoritativos. A existência de um cadastro não comprova autenticação nem concede acesso.
 
-Esta issue entrega somente documentação. Até mesmo as entidades Go e seus testes pertencem às próximas etapas. Não inicializa módulo, não move o bootstrap existente e não cria interfaces Go sem consumidor. Tipos, cardinalidades finais, métodos, construtores e estados serão especificados na issue #4; o catálogo de ações e as políticas, na #5.
+Esta issue entrega somente documentação. Até mesmo as entidades Go e seus testes pertencem às próximas etapas. Não inicializa módulo, não move o bootstrap existente e não cria interfaces Go sem consumidor. Tipos, cardinalidades, métodos, construtores e estados estão nos [contratos da issue #4](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md); o catálogo de ações e as políticas continuam na #5. O [ADR 0007](adr/0007-contas-por-cnpj-e-recontratacao.md) atualiza o modelo para contas independentes por CNPJ e Pessoa como fonte de dados pessoais.
 
 ## Cadastros sob responsabilidade do módulo
 
@@ -16,24 +16,25 @@ Esta issue entrega somente documentação. Até mesmo as entidades Go e seus tes
 |---|---|---|
 | Usuário | Identidade de acesso, e-mail, confirmação e situação de acesso; associação aos cadastros conforme especificação futura | Não confundir confirmação de e-mail com identificação facial ou autenticação de aparelho. Login e sessões serão implementados depois. |
 | Empresa | Cadastro do empregador por CNPJ: identificação, razão social, apelido e responsável legal; associação à referência do A1 | Cada CNPJ constitui seu próprio tenant. Não concentra toda configuração de jornada ou coleta só por pertencer à empresa. |
-| Responsável legal | Identificação por nome e CPF, associada ao cadastro da empresa | Não equivale automaticamente a usuário, gestor ou signatário de todos os artefatos. |
+| Pessoa | Dados pessoais no CNPJ, referenciados por funcionário, usuário e empresa | Não é conta global nem perfil. Não sincronizar dados pessoais automaticamente entre CNPJs. |
+| Responsável legal | Relação da empresa com Pessoa identificada por nome e CPF | Não equivale automaticamente a usuário, gestor ou signatário de todos os artefatos. |
 | Referência do A1 | Associação à empresa e identificação do arquivo protegido, com metadados a especificar | Não contém senha nem conteúdo privado exposto aos consumidores. Upload, validação e custódia técnica são futuros. |
-| Funcionário | Cadastro do trabalhador no CNPJ, com CPF, nome, nascimento, matrícula interna, setor e usuário opcionais e modalidade de coleta | Cadastro pode existir sem conta. Não contém marcações, resultados de apuração ou cadastro biométrico por implicação. |
+| Funcionário | Cadastro do trabalhador no CNPJ, referenciando Pessoa com CPF/nome/nascimento, com matrícula interna, setor e usuário opcionais e modalidade de coleta | Cadastro pode existir sem conta. Não contém marcações, resultados de apuração ou cadastro biométrico por implicação. |
 | Setor | Agrupamento de funcionários da empresa usado para delimitar supervisão | Cadastro e escopo não substituem a verificação da ação sobre o recurso concreto. |
 | Vínculo com empresa | Relação de autorização entre usuário e CNPJ, com perfil, permissões, escopo e situação | Não é vínculo empregatício, sessão ou simples empresa selecionada. Revogar acesso não equivale a excluir o cadastro do funcionário. |
 
-A matrícula interna é estável, aleatória e não sequencial. Sua geração cabe à biblioteca própria prevista no plano; seu formato e escopo de unicidade serão definidos antes do código. O cadastro recebe a matrícula gerada; a futura coordenação com persistência garante unicidade e trata colisões. A matrícula da folha é uma referência externa separada: o mapeamento para integração não torna o `identity-service` responsável por exportar a folha.
+A matrícula interna é estável, aleatória e não sequencial, com seis caracteres `0-9A-Z`, única por CNPJ inclusive no histórico. Sua geração cabe à biblioteca própria prevista no plano. O cadastro recebe a matrícula gerada; a futura coordenação com persistência garante unicidade e trata colisões. Recontratação cria novo funcionário/matrícula e, quando houver acesso, novo usuário, preservando os anteriores encerrados. A matrícula da folha é uma referência externa separada: o mapeamento para integração não torna o `identity-service` responsável por exportar a folha.
 
 ## Identidade, cadastro e autorização são relações distintas
 
 - **Funcionário sem conta:** o cadastro do trabalhador pode existir sem usuário e, portanto, sem vínculo de acesso derivado desse usuário. O fluxo de criação/associação da conta permanece a especificar. No coletor coletivo, apresentar a matrícula declara uma identidade; não substitui comparação facial e prova de vida.
 - **Gestor que também é funcionário:** a identidade de acesso é a mesma; o cadastro de funcionário representa o trabalhador no CNPJ e o vínculo representa suas autorizações. Não criar outra identidade apenas para separar esses papéis. Como acumular perfis e escopos será definido na issue #5, sem presumir autoaprovação de ajustes.
-- **Gestor de dois CNPJs:** o mesmo usuário pode administrar A e B mediante vínculos distintos. Selecionar B não transporta para B permissões, funcionários ou setores de A.
+- **Gestor de dois CNPJs:** a mesma pessoa pode administrar A e B por contas e vínculos independentes. Alterar dados/bloquear a conta em A não altera B. Selecionar B não transporta para B permissões, sessão, funcionários ou setores de A.
 - **Contabilidade/DP em duas empresas:** uma concessão para exportar PDF em A não permite exportar em B nem criar jornadas em A. Cada ação depende da concessão do gestor do CNPJ correspondente.
 - **Supervisor e funcionário de outro setor:** o perfil Supervisor não basta para acessar o cadastro ou operação fora de seu escopo. Referências ao setor e ao funcionário precisam corresponder ao contexto autorizado.
 - **Associação a usuário:** associar um usuário a um funcionário não concede automaticamente um perfil; ter vínculo de gestor não cria automaticamente cadastro de funcionário. Regras de unicidade da associação e sua cardinalidade final pertencem à issue #4.
 
-Esses cenários detalham as separações já aprovadas. Não fixam número de perfis simultâneos, regras de desligamento, exclusão, transferência entre empresas nem o ciclo de onboarding.
+Esses cenários detalham as separações já aprovadas. Os contratos da #4 definem encerramento/recontratação e associações, sem fixar exclusão, transferência entre empresas ou onboarding. Perfis simultâneos e escopos continuam na #5.
 
 ## Autorizações que o módulo representa
 

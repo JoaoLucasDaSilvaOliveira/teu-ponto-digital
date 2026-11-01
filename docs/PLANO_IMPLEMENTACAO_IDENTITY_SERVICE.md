@@ -22,6 +22,7 @@ API, persistência, login completo, tokens, integrações, upload e armazenament
 - Aplicar encapsulamento, abstração, composição e polimorfismo conforme os comportamentos do domínio. Interfaces pequenas representam contratos; implementações específicas expressam comportamento variável. `Pessoa` foi um exemplo de generalização, não uma entidade obrigatória.
 - Campos privados; construtores retornam erro e usam métodos próprios para validar e atribuir. Alterações inválidas preservam o estado anterior.
 - Separar usuário, funcionário e vínculo com empresa. Funcionário pode existir sem conta; uma pessoa pode ser gestora e funcionária. Compartilhar dados e comportamentos comuns conforme a modelagem, sem duplicação entre perfis.
+- Detalhamento confirmado em 01/11/2026: Pessoa concentra CPF/nome/nascimento no CNPJ; Usuário e Funcionário a referenciam. Contas são independentes por CNPJ e recontratação preserva os cadastros encerrados, conforme [ADR 0007](adr/0007-contas-por-cnpj-e-recontratacao.md). Responsável legal passa a ser uma relação com Pessoa, sem cópia cadastral por perfil.
 - Quatro perfis: Gestor, Supervisor, Colaborador e Contabilidade/DP. Não existe Gestor Master separado.
 - O gestor define permissões da Contabilidade/DP por ação e por CNPJ, como exportar PDF, criar horários e criar jornadas (RF-06.1). Contexto selecionado não concede autorização.
 - Responsável legal tem nome e CPF obrigatórios.
@@ -30,21 +31,22 @@ API, persistência, login completo, tokens, integrações, upload e armazenament
 
 ## Modelo inicial a especificar
 
-O detalhamento da issue #4 está em [Contratos de domínio](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md), ainda em elaboração. As mudanças de modelo ali identificadas precisam ser conciliadas antes de tratar os contratos como prontos para implementação.
+O detalhamento da issue #4 está em [Contratos de domínio](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md): entidades, campos, cardinalidades, assinaturas, erros, estados, matrícula e coordenação de invariantes. O conteúdo específico da configuração/política de autorização permanece na issue #5.
 
 Os limites de responsabilidade, os dados fornecidos aos demais módulos e a rastreabilidade da etapa 1 estão detalhados em [Limites e responsabilidades do identity-service](LIMITES_IDENTITY_SERVICE.md), entrega documental da issue #3. Esse detalhamento não antecipa a implementação nem encerra as pendências das etapas seguintes.
 
 | Conceito | Dados principais | Comportamentos previstos |
 |---|---|---|
-| Empresa | ID/tenant, CNPJ, razão social, apelido, responsável e referência do A1 | Alterar cadastro, definir responsável, associar referência de certificado |
-| Usuário | ID, e-mail, confirmação e situação de acesso; associação aos cadastros pessoais definida na modelagem | Alterar e-mail invalidando confirmação, confirmar e-mail, bloquear acesso |
-| Funcionário | ID, empresa, matrícula, CPF, nome, nascimento, setor e usuário opcionais, modalidade | Atualizar dados pessoais, atribuir setor, associar usuário |
+| Empresa | ID/tenant, CNPJ, razão social, apelido, pessoa responsável e referência do A1 | Alterar identificação, definir responsável, associar referência de certificado |
+| Pessoa | ID, empresa, CPF, nome e nascimento opcional para externos | Alterar nome, corrigir CPF, informar/corrigir nascimento |
+| Usuário | ID, empresa, pessoa, e-mail, confirmação e situação de acesso | Alterar e-mail invalidando confirmação, confirmar e-mail, bloquear e encerrar acesso |
+| Funcionário | ID, empresa, pessoa, matrícula, setor e usuário opcionais, modalidade e situação | Atribuir setor, associar usuário, encerrar cadastro |
 | Vínculo com empresa | ID, empresa, usuário, perfil, permissões, escopo e situação | Conceder/revogar acesso, alterar perfil, avaliar permissão |
 | Setor | ID, empresa e nome | Renomear e representar agrupamento de supervisão |
-| Responsável legal | Nome e CPF | Validar e atualizar identificação |
+| Responsável legal | Relação da empresa com Pessoa identificada por nome/CPF | Designar pessoa sem conceder acesso automaticamente |
 | Referência do A1 | Empresa, identificação do arquivo protegido e metadados necessários | Representar associação sem expor segredos |
 
-A especificação determinará entidades versus objetos de valor, relações/cardinalidades, campos obrigatórios/opcionais/imutáveis, tipos, assinaturas dos construtores, métodos, erros e estados. Definirá estados de cadastro incompleto e invariantes entre referências. Unicidade persistente e carregamento autoritativo de vínculos são responsabilidades futuras de coordenação; validação local não os garante.
+Os contratos da issue #4 definem entidades versus objetos de valor, relações, cardinalidades, campos, construtores, métodos, erros e estados. Unicidade persistente e carregamento autoritativo de vínculos continuam responsabilidades futuras de coordenação; validação local não os garante.
 
 ## Dependências
 
@@ -63,7 +65,7 @@ Fixar versões reproduzíveis no módulo após avaliação. Conferir exemplos of
 
 `internal/matriculagen/` gera valores aleatórios com fonte segura e propaga falhas. `internal/domain/value_object/matricula.go` valida e representa matrículas, inclusive existentes. O construtor do funcionário recebe uma matrícula já gerada.
 
-Antes do código, definir tamanho, alfabeto, formato e escopo de unicidade. Não derivar de CPF/nome ou sequência. A persistência futura impõe unicidade e a coordenação do cadastro permite nova tentativa em colisões; o gerador não promete unicidade absoluta. Testar fonte controlável e falhas, sem testes probabilísticos frágeis.
+Formato definido na issue #4: seis caracteres de `0-9A-Z`, normalizados para maiúsculas, únicos por CNPJ inclusive no histórico. Recontratação recebe nova matrícula; antigas permanecem reservadas. Os contratos detalham geração uniforme e tentativas em colisões. Não derivar de CPF/nome ou sequência. A persistência futura impõe unicidade; o gerador não promete unicidade absoluta. Testar fonte controlável e falhas, sem testes probabilísticos frágeis.
 
 ## Estrutura prevista
 
@@ -96,8 +98,8 @@ Cronograma por sequência e dependências, sem datas. Estimativas relativas em p
 | 6 | Implementar objetos de valor CPF e CNPJ | 2, 4, 5 | 3 | HIGH |
 | 7 | Implementar e-mail, nascimento e demais objetos de valor | 2, 4, 5 | 2 | MEDIUM |
 | 8 | Implementar biblioteca matriculagen e objeto de valor Matricula | 2, 5 | 3 | HIGH |
-| 9 | Implementar responsável legal, empresa e referência do A1 | 2, 5, 6, 7 | 3 | HIGH |
-| 10 | Implementar usuário e associação com os cadastros | 2, 5, 7 | 2 | HIGH |
+| 9 | Implementar pessoa, relação de responsável legal, empresa e referência do A1 | 2, 5, 6, 7 | 3 | HIGH |
+| 10 | Implementar usuário e associação com os cadastros | 2, 5, 7, 9 | 2 | HIGH |
 | 11 | Implementar setor e funcionário | 2, 5, 6, 7, 8, 10 | 2 | HIGH |
 | 12 | Implementar vínculo com empresa e políticas dos quatro perfis | 2, 3, 5, 7, 9, 10, 11 | 5 | HIGH |
 | 13 | Revisar domínio, documentação e verificações da rodada | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 | 2 | MEDIUM |
@@ -106,13 +108,13 @@ Criar uma nova issue principal e estas 13 subissues no repositório atual, sem r
 
 ## Verificação e execução posteriores
 
-Executar TDD em cada implementação: cenário observável, teste que falha pelo comportamento ausente, implementação mínima e refatoração. Cobrir invariantes, documentos inválidos, datas civis, falhas de aleatoriedade, preservação de estado e isolamento por tenant/setor/funcionário. Políticas devem testar ações não concedidas, vínculos revogados e permissões diferentes do mesmo usuário em CNPJs distintos, sem banco ou HTTP.
+Executar TDD em cada implementação: cenário observável, teste que falha pelo comportamento ausente, implementação mínima e refatoração. Cobrir invariantes, documentos inválidos, datas civis, falhas de aleatoriedade, preservação de estado e isolamento por tenant/setor/funcionário. Políticas devem testar ações não concedidas, vínculos revogados e permissões diferentes de contas da mesma pessoa em CNPJs distintos, sem banco ou HTTP.
 
 Testes, análise estática e formatação terão comandos documentados no módulo. Não declarar o domínio como serviço seguro em produção antes de implementar a autorização autoritativa nas entradas, a persistência e a infraestrutura. Seguir branches `feat/identity-service/...`, commits convencionais e fluxo de revisão/homologação do repositório.
 
 ## Pendências preservadas
 
-- Formato e escopo de unicidade da matrícula, contratos finais, cardinalidades e estados de cadastro incompleto: resolver nas especificações antes do código.
+- Formato/escopo da matrícula, cardinalidades, estados e contratos comuns estão definidos na issue #4; configuração e política de autorização serão fechadas na #5 antes da implementação do vínculo.
 - Matriz completa de ações, autoaprovação e acesso a atestados: especificar por área, sem conceder implicitamente.
 - Custódia técnica do A1, signatários de artefatos e regras regulatórias: resolver antes dos respectivos adaptadores e relatórios.
 - Cadastro facial inicial, mudança de modalidade, fallbacks e detalhes do coletor/offline: permanecem nas fontes próprias.

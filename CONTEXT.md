@@ -4,17 +4,19 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 ## Linguagem
 
-**Tenant**: Contexto de um CNPJ, com dados, permissões e configurações próprios. Um gestor pode ter acesso a vários tenants mediante vínculos distintos.
+**Tenant**: Contexto de um CNPJ, com dados, contas, permissões e configurações próprios. Uma pessoa pode atuar em vários tenants por cadastros e contas independentes.
 
 **Empresa**: Cadastro do empregador identificado por um CNPJ, correspondente a um tenant no produto.
 
-**Responsável legal**: Pessoa identificada por nome e CPF no cadastro da empresa. Essa condição é distinta de possuir identidade de acesso ou perfil de Gestor.
+**Pessoa**: Cadastro de dados pessoais no contexto de um CNPJ, com CPF e nome e, quando necessário, nascimento. Pode estar relacionado a acesso, ao cadastro de trabalhador e à responsabilidade legal, sem duplicação dos dados por perfil.
+
+**Responsável legal**: Pessoa identificada por nome e CPF, designada no cadastro da empresa. Essa condição é distinta de possuir identidade de acesso ou perfil de Gestor.
 
 **Gestor**: Pessoa autorizada a administrar um ou mais contextos de empresa, conforme as permissões em cada vínculo.
 
-**Usuário**: Identidade de acesso à aplicação. Pode ter vínculos distintos com empresas e ser associado a um cadastro de funcionário.
+**Usuário**: Conta de acesso de uma pessoa em um único CNPJ, com e-mail, confirmação e situação de acesso próprios. Contas com o mesmo e-mail em empresas diferentes são independentes.
 
-**Funcionário**: Cadastro do trabalhador no contexto de uma empresa. Pode existir antes de sua associação a um usuário de acesso.
+**Funcionário**: Cadastro do trabalhador no contexto de uma empresa, associado a uma pessoa e a uma matrícula interna. Pode existir sem conta; uma recontratação cria outro cadastro, preservando o anterior encerrado.
 
 **Vínculo com empresa**: Relação que autoriza um usuário a atuar em um CNPJ, com perfil, permissões e escopo próprios daquele contexto. É distinto do vínculo empregatício do trabalhador.
 
