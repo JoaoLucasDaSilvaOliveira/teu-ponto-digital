@@ -6,7 +6,7 @@ Status: aprovado em 30/10/2026. Esta aprovação autoriza o registro do plano e 
 
 Construir o domínio do primeiro serviço, responsável pelas identidades de acesso, cadastros de empresas e funcionários e vínculos de autorização, preparando o fornecimento de dados a outros serviços. Entregar entidades, objetos de valor, interfaces necessárias, biblioteca própria de matrícula e testes.
 
-API, persistência, login completo, tokens, integrações, upload e armazenamento do A1, biometria, jornadas e cálculos são etapas posteriores. Por orientação do usuário em 02/11/2026, o módulo foi inicializado diretamente em `services/identity-service/`, com testes das dependências adotadas em `test/`; os comandos reais e os resultados da inicialização da #7 estão no [README do módulo](../services/identity-service/README.md).
+API, persistência, login completo, tokens, integrações, upload e armazenamento do A1, biometria, jornadas e cálculos são etapas posteriores. Por orientação do usuário em 02/11/2026, o módulo foi inicializado diretamente em `services/identity-service/`, com testes das dependências adotadas em `test/`; os comandos de desenvolvimento estão no [README do módulo](../services/identity-service/README.md).
 
 ## Fontes
 

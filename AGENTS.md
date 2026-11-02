@@ -70,6 +70,10 @@ Crie commits ao final de cada rodada de trabalho ou ao concluir uma implementaç
 
 Siga [Conventional Commits](https://www.conventionalcommits.org/pt-br/v1.0.0/): `<tipo>[escopo opcional]: <descrição>`. Use escopo quando ajudar a identificar o serviço ou área alterada. Exemplos: `feat(identity-service): adiciona entidades de domínio`, `fix(clock-service): corrige pareamento de marcações` e `docs(projeto): define fluxo de versionamento`. Use `!` ou o rodapé `BREAKING CHANGE:` para mudanças incompatíveis. Os prefixos de branches não determinam diretamente o tipo do commit: correções em `bugfix/` ou `hotfix/` usam `fix`.
 
+## Documentação
+
+Escreva documentação conforme as convenções do artefato e seu público técnico. READMEs devem apresentar propósito, pré-requisitos e comandos de uso de forma direta. Reserve explicações para particularidades do projeto; evite tom de chat, tutoriais de ferramentas básicas, redundâncias e relatos da execução do agente. Resultados de verificações pertencem à entrega ou ao commit, salvo quando o documento tiver essa finalidade específica.
+
 ## Execução e conclusão
 
 Antes de criar arquivos ou diretórios, avalie sua necessidade concreta e prefira a estrutura existente. Crie apenas o que será usado pela implementação, verificação ou documentação exigida; evite scaffolding, cópias de manifestos e scripts que apenas envolvem comandos diretos. Se a necessidade não estiver clara e depender de uma decisão do usuário, pergunte antes. Não produza arquivos ou gaste tokens apenas para preencher uma estrutura.
