@@ -72,6 +72,8 @@ Siga [Conventional Commits](https://www.conventionalcommits.org/pt-br/v1.0.0/): 
 
 ## Execução e conclusão
 
+Antes de criar arquivos ou diretórios, avalie sua necessidade concreta e prefira a estrutura existente. Crie apenas o que será usado pela implementação, verificação ou documentação exigida; evite scaffolding, cópias de manifestos e scripts que apenas envolvem comandos diretos. Se a necessidade não estiver clara e depender de uma decisão do usuário, pergunte antes. Não produza arquivos ou gaste tokens apenas para preencher uma estrutura.
+
 Inspecione os arquivos e manifestos existentes para determinar estrutura, versões e comandos. Este projeto não define ainda um roteiro verificado de build/teste; registre os comandos reais quando a implementação existir, sem copiar rotinas do repositório anterior como se já funcionassem aqui.
 
 Ao alterar comportamento, atualize a fonte correspondente e preserve os IDs dos requisitos; acrescente ADR quando houver uma nova decisão arquitetural relevante. Mantenha pesquisas separadas de requisitos aceitos.

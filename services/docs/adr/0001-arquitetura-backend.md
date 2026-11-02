@@ -24,3 +24,7 @@ A geração de matrícula interna será uma biblioteca própria em `internal/mat
 ## Detalhamento do domínio em 01/11/2026
 
 Os [contratos da issue #4](../../../docs/ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md) adotam Pessoa como entidade do CNPJ para dados pessoais, referenciada por Usuário, Funcionário e pela relação de responsável legal. Substituem a previsão inicial de responsável legal como objeto independente com dados duplicados, sem criar herança. O [ADR 0007](../../../docs/adr/0007-contas-por-cnpj-e-recontratacao.md) estabelece contas independentes por CNPJ e preservação de cadastros encerrados na recontratação. Pessoa será implementada antes de seus consumidores na etapa de empresa/responsável, mantendo as demais dependências do plano.
+
+## Avaliação de dependências em 02/11/2026
+
+A [issue #6](../../../docs/DEPENDENCIAS_DOMINIO_IDENTITY_SERVICE.md) fixa `github.com/google/uuid v1.6.0` e o pacote `cloud.google.com/go/civil` do módulo `cloud.google.com/go v0.123.0`. A candidata `github.com/cll0ud/cpfcnpj v0.1.0` foi rejeitada após testes por completar entradas incompletas e aceitar caracteres arbitrários/vazio; CPF/CNPJ serão implementados com biblioteca padrão nos tipos próprios da #8. Essa conclusão substitui sua condição anterior de candidata nesta rodada. Por solicitação do usuário, módulo e hashes foram criados diretamente em `services/identity-service/`, com testes em `test/`, antecipando essa parte da #7. O domínio permanece independente de transporte/persistência.

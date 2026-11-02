@@ -6,7 +6,7 @@ Status: aprovado em 30/10/2026. Esta aprovação autoriza o registro do plano e 
 
 Construir o domínio do primeiro serviço, responsável pelas identidades de acesso, cadastros de empresas e funcionários e vínculos de autorização, preparando o fornecimento de dados a outros serviços. Entregar entidades, objetos de valor, interfaces necessárias, biblioteca própria de matrícula e testes.
 
-API, persistência, login completo, tokens, integrações, upload e armazenamento do A1, biometria, jornadas e cálculos são etapas posteriores. Não há módulo Go ou suíte executável nesta etapa de planejamento; comandos reais serão registrados quando o módulo existir.
+API, persistência, login completo, tokens, integrações, upload e armazenamento do A1, biometria, jornadas e cálculos são etapas posteriores. Por orientação do usuário em 02/11/2026, o módulo foi inicializado diretamente em `services/identity-service/`, com testes das dependências adotadas em `test/`; os comandos reais estão no parecer de dependências.
 
 ## Fontes
 
@@ -53,14 +53,14 @@ Os contratos da issue #4 definem entidades versus objetos de valor, relações, 
 
 | Componente | Decisão |
 |---|---|
-| IDs | `github.com/google/uuid`, já escolhido |
-| Datas civis | Objeto próprio com `cloud.google.com/go/civil.Date`; instantes usam `time.Time` |
-| CPF/CNPJ | Tipos próprios; `github.com/cll0ud/cpfcnpj` candidato, condicionado à avaliação de licença, versão e comportamento |
+| IDs | `github.com/google/uuid v1.6.0`, avaliado na #6 |
+| Datas civis | Objeto próprio com `cloud.google.com/go/civil.Date`, fornecido por `cloud.google.com/go v0.123.0`; instantes usam `time.Time` |
+| CPF/CNPJ | Tipos próprios com validação pela biblioteca padrão a implementar na #8; `github.com/cll0ud/cpfcnpj v0.1.0` avaliado e rejeitado por completar documentos e aceitar caracteres indevidos |
 | E-mail e testes | Biblioteca padrão Go |
 | Matrícula | Biblioteca própria com aleatoriedade segura |
 | HTTP/persistência | Chi, GORM e driver PostgreSQL são escolhas para próximas camadas, sem adoção antecipada |
 
-Fixar versões reproduzíveis no módulo após avaliação. Conferir exemplos oficiais de CNPJ numérico/alfanumérico e rejeição de dados incompletos, sem completar zeros silenciosamente. Referências de avaliação: [civil](https://pkg.go.dev/cloud.google.com/go/civil), [biblioteca candidata](https://github.com/cll0ud/cpfcnpj) e [CNPJ alfanumérico — Receita Federal](https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/cnpj-alfanumerico).
+A [avaliação da issue #6](DEPENDENCIAS_DOMINIO_IDENTITY_SERVICE.md) registra versões, licenças, procedência e resultados; a [pesquisa de documentos](PESQUISA_VALIDACAO_CPF_CNPJ.md) distingue fontes oficiais e exemplos sintéticos. As dependências adotadas estão no `go.mod` real do serviço, com Go 1.24.0 como mínimo exigido pelo módulo de datas e hashes gerados por `go mod tidy`. Essa parte da #7 foi antecipada por solicitação do usuário.
 
 ## Biblioteca de matrícula
 
