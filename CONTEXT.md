@@ -16,6 +16,8 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Usuário**: Conta de acesso de uma pessoa em um único CNPJ, com e-mail, confirmação e situação de acesso próprios. Contas com o mesmo e-mail em empresas diferentes são independentes.
 
+**E-mail confirmado**: Condição da conta cujo endereço atual passou pela confirmação de titularidade. É distinta da validade sintática do endereço, da situação de acesso da conta e da autorização no CNPJ.
+
 **Funcionário**: Cadastro do trabalhador no contexto de uma empresa, associado a uma pessoa e a uma matrícula interna. Pode existir sem conta; uma recontratação cria outro cadastro, preservando o anterior encerrado.
 
 **Vínculo com empresa**: Relação que autoriza um usuário a atuar em um CNPJ, com perfil, permissões e escopo próprios daquele contexto. É distinto do vínculo empregatício do trabalhador.
@@ -37,6 +39,8 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 **Matrícula da folha**: Código do funcionário no sistema externo de folha, relacionado à matrícula interna por um mapeamento de integração.
 
 **Solicitação de ajuste**: Pedido de correção do tratamento de ponto, acompanhado de justificativa e sujeito à avaliação de um superior. Não equivale a uma marcação original retroativa.
+
+**Modalidade de coleta**: Atribuição da empresa ao funcionário que define o uso de aparelho próprio ou aparelho coletivo para registrar ponto.
 
 **Aparelho próprio**: Modalidade de coleta atribuída ao funcionário para uso de seu dispositivo pessoal com autenticação do dispositivo.
 

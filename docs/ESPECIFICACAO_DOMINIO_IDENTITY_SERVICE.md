@@ -58,6 +58,8 @@ Referências recebidas como entidades permitem verificar localmente empresa, pes
 
 Operações retornam erro para entradas inválidas; nenhuma delas escreve logs com CPF, e-mail ou segredos. Instantes de transição são recebidos explicitamente e precisam ser não zero; não são prova de horário confiável ou auditoria por si.
 
+Implementação da [issue #9](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/9): `Email`, `Nome`, `DataNascimento`, `Perfil` e `ModalidadeColeta` ficam em `services/identity-service/internal/domain/value_object/` (pacote `valueobject`, alias `vo`). Os testes exercitam os construtores e leituras públicos, valores zero e validação; erros usam `ErrValorInvalido` com contexto e sem conteúdo pessoal. `Perfil` expõe `Codigo()` e `Validar()`, conforme os quatro códigos da [especificação de autorização](AUTORIZACAO_IDENTITY_SERVICE.md). Matrícula continua na #10, referência A1 na #11 e ações/configurações/políticas na #14.
+
 ## Empresa
 
 | Campo privado | Tipo | Regra |
@@ -170,7 +172,7 @@ Encerramento da conta, revogação do vínculo e criação da nova conta não po
 
 O espaço contém `36^6 = 2.176.782.336` valores por CNPJ; colisões são possíveis muito antes de esgotá-lo. O gerador faz uma geração e não promete unicidade. O cadastro futuro tenta persistir com restrição de unicidade e, somente em conflito de matrícula, gera novamente, até dez tentativas por operação. Após isso retorna erro controlado sem cadastro parcial; não repetir indefinidamente nem repetir outros erros de persistência. Falha da fonte retorna imediatamente. A reserva histórica nunca é liberada por encerramento. Matrícula não é segredo nem fator de autenticação.
 
-Implementação da [issue #10](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/10): `matriculagen.Gerar()` usa `crypto/rand.Reader`, com descarte dos bytes de 252 a 255 antes da redução ao alfabeto. A fonte é recebida pela função interna `gerar(io.Reader)`, sem configuração pública de fonte alternativa. Falhas retornam matrícula zero e erro com contexto e causa preservada. `value_object.NovaMatricula`, `String` e `Validar` representam valores independentemente do gerador; erros de formato usam `value_object.ErrValorInvalido`, inclusive para o valor zero. Persistência, novas tentativas em colisão e o construtor do funcionário permanecem nas etapas próprias.
+Implementação da [issue #10](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/10): `matriculagen.Gerar()` usa `crypto/rand.Reader`, com descarte dos bytes de 252 a 255 antes da redução ao alfabeto. A fonte é recebida pela função interna `gerar(io.Reader)`, sem configuração pública de fonte alternativa. Falhas retornam matrícula zero e erro com contexto e causa preservada. `valueobject.NovaMatricula`, `String` e `Validar` representam valores independentemente do gerador; erros de formato usam `valueobject.ErrValorInvalido`, inclusive para o valor zero. Persistência, novas tentativas em colisão e o construtor do funcionário permanecem nas etapas próprias.
 
 ## Erros e reconstrução
 

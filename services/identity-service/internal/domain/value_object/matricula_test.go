@@ -1,4 +1,4 @@
-package value_object_test
+package valueobject_test
 
 import (
 	"errors"
