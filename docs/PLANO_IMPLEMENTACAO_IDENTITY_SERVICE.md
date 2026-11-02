@@ -25,13 +25,14 @@ API, persistência, login completo, tokens, integrações, upload e armazenament
 - Detalhamento confirmado em 01/11/2026: Pessoa concentra CPF/nome/nascimento no CNPJ; Usuário e Funcionário a referenciam. Contas são independentes por CNPJ e recontratação preserva os cadastros encerrados, conforme [ADR 0007](adr/0007-contas-por-cnpj-e-recontratacao.md). Responsável legal passa a ser uma relação com Pessoa, sem cópia cadastral por perfil.
 - Quatro perfis: Gestor, Supervisor, Colaborador e Contabilidade/DP. Não existe Gestor Master separado.
 - O gestor define permissões da Contabilidade/DP por ação e por CNPJ, como exportar PDF, criar horários e criar jornadas (RF-06.1). Contexto selecionado não concede autorização.
+- Detalhamento confirmado na issue #5: Gestor exclusivo, Supervisor compondo ações próprias do Colaborador e concessões sobre equipe diretamente atribuída, sem autoaprovação. Configuração, catálogo inicial e contratos constam em [Autorização](AUTORIZACAO_IDENTITY_SERVICE.md); todos os acessos e serviços da aplicação serão inventariados na [issue #17](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/17), trabalho relacionado fora das 13 etapas/estimativas originais.
 - Responsável legal tem nome e CPF obrigatórios.
 - Certificado A1 é enviado à aplicação com senha quando necessária; validar o arquivo e proteger arquivo/senha na implementação futura. A3 fica para o futuro. A representação de referência no domínio não homologa signatários nem conformidade dos relatórios.
 - Matrícula interna aleatória, não sequencial, estável e gerada por biblioteca própria. Pode ser apresentada no coletor; não substitui comparação facial e prova de vida. Matrícula da folha continua como referência externa separada.
 
 ## Modelo inicial a especificar
 
-O detalhamento da issue #4 está em [Contratos de domínio](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md): entidades, campos, cardinalidades, assinaturas, erros, estados, matrícula e coordenação de invariantes. O conteúdo específico da configuração/política de autorização permanece na issue #5.
+O detalhamento da issue #4 está em [Contratos de domínio](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md): entidades, campos, cardinalidades, assinaturas, erros, estados, matrícula e coordenação de invariantes. A [especificação da issue #5](AUTORIZACAO_IDENTITY_SERVICE.md) completa configuração/política de autorização e referência direta de supervisão no Funcionário, substituindo setor como critério de subordinação.
 
 Os limites de responsabilidade, os dados fornecidos aos demais módulos e a rastreabilidade da etapa 1 estão detalhados em [Limites e responsabilidades do identity-service](LIMITES_IDENTITY_SERVICE.md), entrega documental da issue #3. Esse detalhamento não antecipa a implementação nem encerra as pendências das etapas seguintes.
 
@@ -40,7 +41,7 @@ Os limites de responsabilidade, os dados fornecidos aos demais módulos e a rast
 | Empresa | ID/tenant, CNPJ, razão social, apelido, pessoa responsável e referência do A1 | Alterar identificação, definir responsável, associar referência de certificado |
 | Pessoa | ID, empresa, CPF, nome e nascimento opcional para externos | Alterar nome, corrigir CPF, informar/corrigir nascimento |
 | Usuário | ID, empresa, pessoa, e-mail, confirmação e situação de acesso | Alterar e-mail invalidando confirmação, confirmar e-mail, bloquear e encerrar acesso |
-| Funcionário | ID, empresa, pessoa, matrícula, setor e usuário opcionais, modalidade e situação | Atribuir setor, associar usuário, encerrar cadastro |
+| Funcionário | ID, empresa, pessoa, matrícula, setor, usuário e vínculo Supervisor opcionais, modalidade e situação | Atribuir setor e supervisão, associar usuário, encerrar cadastro |
 | Vínculo com empresa | ID, empresa, usuário, perfil, permissões, escopo e situação | Conceder/revogar acesso, alterar perfil, avaliar permissão |
 | Setor | ID, empresa e nome | Renomear e representar agrupamento de supervisão |
 | Responsável legal | Relação da empresa com Pessoa identificada por nome/CPF | Designar pessoa sem conceder acesso automaticamente |
@@ -100,7 +101,7 @@ Cronograma por sequência e dependências, sem datas. Estimativas relativas em p
 | 8 | Implementar biblioteca matriculagen e objeto de valor Matricula | 2, 5 | 3 | HIGH |
 | 9 | Implementar pessoa, relação de responsável legal, empresa e referência do A1 | 2, 5, 6, 7 | 3 | HIGH |
 | 10 | Implementar usuário e associação com os cadastros | 2, 5, 7, 9 | 2 | HIGH |
-| 11 | Implementar setor e funcionário | 2, 5, 6, 7, 8, 10 | 2 | HIGH |
+| 11 | Implementar setor, funcionário e referência de supervisão | 2, 3, 5, 6, 7, 8, 10 | 2 | HIGH |
 | 12 | Implementar vínculo com empresa e políticas dos quatro perfis | 2, 3, 5, 7, 9, 10, 11 | 5 | HIGH |
 | 13 | Revisar domínio, documentação e verificações da rodada | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 | 2 | MEDIUM |
 
@@ -114,8 +115,8 @@ Testes, análise estática e formatação terão comandos documentados no módul
 
 ## Pendências preservadas
 
-- Formato/escopo da matrícula, cardinalidades, estados e contratos comuns estão definidos na issue #4; configuração e política de autorização serão fechadas na #5 antes da implementação do vínculo.
-- Matriz completa de ações, autoaprovação e acesso a atestados: especificar por área, sem conceder implicitamente.
+- Formato/escopo da matrícula, cardinalidades, estados e contratos comuns estão definidos na issue #4; configuração, política e supervisão direta estão especificadas na #5 antes da implementação do vínculo.
+- Matriz completa de ações/serviços na #17, sem concessão implícita. Autoaprovação foi proibida; tratamento de atestado inclui acesso ao documento e abono da ocorrência, conforme a #5. Demais fluxos de documentos e lançamentos exigem especificação própria.
 - Custódia técnica do A1, signatários de artefatos e regras regulatórias: resolver antes dos respectivos adaptadores e relatórios.
 - Cadastro facial inicial, mudança de modalidade, fallbacks e detalhes do coletor/offline: permanecem nas fontes próprias.
 

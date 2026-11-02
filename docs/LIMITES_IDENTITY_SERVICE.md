@@ -20,7 +20,7 @@ Esta issue entrega somente documentação. Até mesmo as entidades Go e seus tes
 | Responsável legal | Relação da empresa com Pessoa identificada por nome e CPF | Não equivale automaticamente a usuário, gestor ou signatário de todos os artefatos. |
 | Referência do A1 | Associação à empresa e identificação do arquivo protegido, com metadados a especificar | Não contém senha nem conteúdo privado exposto aos consumidores. Upload, validação e custódia técnica são futuros. |
 | Funcionário | Cadastro do trabalhador no CNPJ, referenciando Pessoa com CPF/nome/nascimento, com matrícula interna, setor e usuário opcionais e modalidade de coleta | Cadastro pode existir sem conta. Não contém marcações, resultados de apuração ou cadastro biométrico por implicação. |
-| Setor | Agrupamento de funcionários da empresa usado para delimitar supervisão | Cadastro e escopo não substituem a verificação da ação sobre o recurso concreto. |
+| Setor | Agrupamento organizacional de funcionários da empresa, independente de equipe | Supervisão usa atribuição direta ao vínculo Supervisor; cadastro e escopo não substituem verificação da ação sobre o recurso. |
 | Vínculo com empresa | Relação de autorização entre usuário e CNPJ, com perfil, permissões, escopo e situação | Não é vínculo empregatício, sessão ou simples empresa selecionada. Revogar acesso não equivale a excluir o cadastro do funcionário. |
 
 A matrícula interna é estável, aleatória e não sequencial, com seis caracteres `0-9A-Z`, única por CNPJ inclusive no histórico. Sua geração cabe à biblioteca própria prevista no plano. O cadastro recebe a matrícula gerada; a futura coordenação com persistência garante unicidade e trata colisões. Recontratação cria novo funcionário/matrícula e, quando houver acesso, novo usuário, preservando os anteriores encerrados. A matrícula da folha é uma referência externa separada: o mapeamento para integração não torna o `identity-service` responsável por exportar a folha.
@@ -28,13 +28,13 @@ A matrícula interna é estável, aleatória e não sequencial, com seis caracte
 ## Identidade, cadastro e autorização são relações distintas
 
 - **Funcionário sem conta:** o cadastro do trabalhador pode existir sem usuário e, portanto, sem vínculo de acesso derivado desse usuário. O fluxo de criação/associação da conta permanece a especificar. No coletor coletivo, apresentar a matrícula declara uma identidade; não substitui comparação facial e prova de vida.
-- **Gestor que também é funcionário:** a identidade de acesso é a mesma; o cadastro de funcionário representa o trabalhador no CNPJ e o vínculo representa suas autorizações. Não criar outra identidade apenas para separar esses papéis. Como acumular perfis e escopos será definido na issue #5, sem presumir autoaprovação de ajustes.
+- **Gestor com cadastro de funcionário:** manter separados cadastro do trabalhador e acesso, sem duplicar Pessoa. A decisão posterior da #5 torna Gestor exclusivo e sem ações próprias de ponto; ter cadastro associado não acrescenta perfil Colaborador nem elimina o histórico. Perfil do produto não determina enquadramento trabalhista.
 - **Gestor de dois CNPJs:** a mesma pessoa pode administrar A e B por contas e vínculos independentes. Alterar dados/bloquear a conta em A não altera B. Selecionar B não transporta para B permissões, sessão, funcionários ou setores de A.
 - **Contabilidade/DP em duas empresas:** uma concessão para exportar PDF em A não permite exportar em B nem criar jornadas em A. Cada ação depende da concessão do gestor do CNPJ correspondente.
-- **Supervisor e funcionário de outro setor:** o perfil Supervisor não basta para acessar o cadastro ou operação fora de seu escopo. Referências ao setor e ao funcionário precisam corresponder ao contexto autorizado.
+- **Supervisor e funcionário de outro setor:** setor não define supervisão. A ação exige concessão e subordinação direta; funcionário de outro setor pode pertencer à equipe, enquanto colega do mesmo setor sem atribuição não pertence.
 - **Associação a usuário:** associar um usuário a um funcionário não concede automaticamente um perfil; ter vínculo de gestor não cria automaticamente cadastro de funcionário. Regras de unicidade da associação e sua cardinalidade final pertencem à issue #4.
 
-Esses cenários detalham as separações já aprovadas. Os contratos da #4 definem encerramento/recontratação e associações, sem fixar exclusão, transferência entre empresas ou onboarding. Perfis simultâneos e escopos continuam na #5.
+Esses cenários detalham as separações já aprovadas. Os contratos da #4 definem encerramento/recontratação e associações, sem fixar exclusão, transferência entre empresas ou onboarding. A [#5](AUTORIZACAO_IDENTITY_SERVICE.md) define perfil por configuração, capacidades compostas do Supervisor e escopos; a [#17](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/17) completa o inventário de acessos/serviços.
 
 ## Autorizações que o módulo representa
 
@@ -79,7 +79,7 @@ CPF, nascimento, e-mail e outros dados pessoais não compõem um payload univers
 | RF-03 | Cadastro da empresa, responsável com nome/CPF e referência do A1 | Estados incompletos na #4; custódia e upload em etapa posterior; signatários seguem na revisão. |
 | RF-04 | Empresa selecionada distinta de autorização | Fluxo de seleção/sessão na implementação futura do login. |
 | RF-05 e RF-05.1 | Funcionário independente de usuário e matrícula interna | Cardinalidades na #4; formato e unicidade da matrícula antes da #10; cadastro na #13. |
-| RF-06 e RF-06.1 | Quatro perfis, escopo e concessão por ação/CNPJ | Matriz, acúmulo de perfis, autoaprovação e acesso a atestados na #5 ou especificação da área afetada; implementação na #14. |
+| RF-06 e RF-06.1 | Quatro perfis, escopo e concessão por ação/CNPJ | Contratos/padrões iniciais na #5, incluindo proibição de autoaprovação e tratamento conjunto de atestado/abono; catálogo completo na #17 e implementação na #14. |
 | RF-07 | Confirmação de e-mail da identidade de acesso | Estado no domínio na #12; mecanismo e onboarding futuros. |
 | RF-08 | Identidade e vínculos como contexto da sessão | Sessão de longa duração, tokens e segurança fora da primeira rodada de domínio. |
 | RF-11.1; ADR 0005 | Modalidade atribuída por empresa e funcionário | Sem implementar coleta; mudança de modalidade, cadastro inicial, fallbacks e offline continuam pendentes nas fontes próprias. |

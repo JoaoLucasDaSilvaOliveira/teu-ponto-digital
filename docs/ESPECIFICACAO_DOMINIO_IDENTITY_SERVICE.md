@@ -13,13 +13,13 @@ Fontes: [plano](PLANO_IMPLEMENTACAO_IDENTITY_SERVICE.md), [limites](LIMITES_IDEN
 | Usuário | Entidade do CNPJ | Referencia uma pessoa e compõe e-mail e estados de acesso/confirmação. Não contém cópia de CPF/nome/nascimento. |
 | Funcionário | Entidade do CNPJ | Cadastro do trabalhador, referencia pessoa, setor e usuário opcional; compõe matrícula e modalidade de coleta. Não é um perfil de acesso. |
 | Setor | Entidade do CNPJ | Agrupamento identificado, renomeável; não contém lista mutável de funcionários. A relação fica no funcionário. |
-| Vínculo com empresa | Entidade do CNPJ | Referencia usuário e compõe configuração de autorização. A mesma pessoa pode acumular condições; composição de perfis e precedência serão especificadas na #5. |
+| Vínculo com empresa | Entidade do CNPJ | Referencia usuário e compõe configuração de autorização, completada pela [issue #5](AUTORIZACAO_IDENTITY_SERVICE.md). Um perfil por configuração; Supervisor inclui capacidades próprias de Colaborador, Gestor é exclusivo. |
 | Responsável legal | Relação | Empresa referencia Pessoa identificada por nome/CPF. Não é entidade duplicada nem perfil de acesso. Não exige nascimento ou conta. |
 | CPF, CNPJ, Email, Nome, DataNascimento, Matricula, ModalidadeColeta, ReferenciaA1 | Objetos de valor | Imutáveis, comparáveis por conteúdo e substituídos por inteiro. Não possuem ciclo de identidade próprio. |
 
 Dados pessoais não são repetidos em estruturas para Gestor, Supervisor, Colaborador ou Contabilidade/DP. Não há herança `Pessoa → Usuário → Funcionário`: uma pessoa pode existir sem conta, um usuário externo pode existir sem funcionário e um gestor pode também ser funcionário. Não criar interfaces genéricas de pessoa, CRUD ou repositório sem consumidor real.
 
-Os comportamentos variáveis dos quatro perfis serão adaptadores de uma interface pequena de política na #5. A entidade vínculo receberá essa política para avaliar ações, sem selecionar comportamento pelo tipo concreto. A #4 especifica o armazenamento e as invariantes comuns; não antecipa uma matriz de concessões nem a assinatura final dessa política.
+Os comportamentos variáveis dos quatro perfis são especificados como adaptadores de uma interface pequena de política na [issue #5](AUTORIZACAO_IDENTITY_SERVICE.md). A entidade vínculo recebe essa política para avaliar ações, sem selecionar comportamento pelo tipo concreto. A #4 especifica armazenamento/invariantes comuns; a #5 completa matriz inicial e assinatura da política, sem implementar código nesta rodada documental.
 
 ## Relações e cardinalidades
 
@@ -118,12 +118,15 @@ E-mail confirmado, conta ATIVA e vínculo autorizado são condições distintas.
 | matricula | `vo.Matricula` | Obrigatória e imutável por cadastro, reservada após encerramento. |
 | modalidade | `vo.ModalidadeColeta` | Obrigatória, atribuída inicialmente pela empresa. |
 | setorID, usuarioID | `uuid.UUID` opcionais | Mesmo tenant; usuário da mesma Pessoa e não encerrado ao associar. |
+| supervisorVinculoID | `uuid.UUID` opcional | Vínculo Supervisor específico do mesmo CNPJ, conforme os contratos da #5. Não é inferido pelo setor. |
 | situacao | `SituacaoFuncionario` | `ATIVO` ou `ENCERRADO`. |
 | encerradoEm | `time.Time` opcional | Preenchido no encerramento terminal. |
 
 Construtor: `NovoFuncionario(id uuid.UUID, pessoa *Pessoa, matricula vo.Matricula, modalidade vo.ModalidadeColeta, hoje civil.Date) (*Funcionario, error)`. Exige Pessoa válida com nascimento válido em `hoje`. Inicia ATIVO, sem setor nem conta. Não gera matrícula nem concede perfil Colaborador.
 
 Métodos: `AtribuirSetor(setor *Setor) error`, `RemoverSetor() error`, `AssociarUsuario(usuario *Usuario) error`, `Encerrar(quando time.Time) error`. Getters: `PessoaID()`, `Matricula()`, `Modalidade()`, `SetorID() (uuid.UUID, bool)`, `UsuarioID() (uuid.UUID, bool)`, `Situacao()`, `EncerradoEm() (time.Time, bool)`.
+
+Complemento da #5: `AtribuirSupervisor(supervisor vo.ReferenciaSupervisor) error`, `RemoverSupervisor() error`, `SupervisorVinculoID() (uuid.UUID, bool)`. Inicialmente sem supervisão. O valor de referência contém os IDs de empresa, vínculo, usuário e Pessoa do Supervisor, sem afirmar validade atual do acesso. A equipe é derivada dessas referências diretas; existência, validade e autorização da atribuição/transferência seguem [Autorização](AUTORIZACAO_IDENTITY_SERVICE.md), com preservação de estado em erro e histórico no encerramento. Funcionário na #13 pode compilar sem a implementação de Vínculo/políticas da #14; a coordenação valida os registros autoritativos antes de atribuir.
 
 Associar novamente o mesmo usuário é idempotente; associar outro a funcionário já associado retorna conflito, sem substituir a conta. Encerrado rejeita alterações e preserva referências; repetir encerramento preserva o primeiro instante. Não há reativação, troca de CNPJ, regeneração de matrícula ou mudança de modalidade nesta rodada. Migração de modalidade e substituição/desassociação de conta exigem fluxo próprio antes de expor métodos; essas pendências não impedem definir o cadastro inicial. CPF/nome/nascimento são acessados pela Pessoa, sem setters duplicados no Funcionário.
 
@@ -137,13 +140,13 @@ Nomes iguais não significam o mesmo setor; somente ID define identidade. Não i
 
 ## Vínculo com empresa
 
-Campos privados: `id`, `empresaID`, `usuarioID` (`uuid.UUID`, obrigatórios/imutáveis), `autorizacao` (`ConfiguracaoAutorizacao`, obrigatório), `situacao` (`SituacaoVinculo`, `ATIVO` ou `REVOGADO`) e `revogadoEm` (`time.Time` opcional). A configuração é um valor composto imutável de perfis, concessões e escopos, cujo conteúdo e validação serão fechados na #5. Não publicar um tipo vazio/`any` como solução provisória.
+Campos privados: `id`, `empresaID`, `usuarioID` (`uuid.UUID`, obrigatórios/imutáveis), `autorizacao` (`vo.ConfiguracaoAutorizacao`, obrigatório), `situacao` (`SituacaoVinculo`, `ATIVO` ou `REVOGADO`) e `revogadoEm` (`time.Time` opcional). Configuração é valor imutável de um perfil e concessões, com alcance definido por perfil e recurso conforme a #5; não publicar um tipo vazio/`any` como solução provisória.
 
 Contratos previstos para implementação na #14, após a #5: `NovoVinculo(id uuid.UUID, usuario *Usuario, autorizacao ConfiguracaoAutorizacao) (*Vinculo, error)`, `AlterarAutorizacao(autorizacao ConfiguracaoAutorizacao) error`, `Revogar(quando time.Time) error`. Getters: `UsuarioID()`, `Autorizacao()`, `Situacao()`, `RevogadoEm() (time.Time, bool)`.
 
-Criação exige usuário válido e não encerrado; perfil não é inferido de CPF, empresa responsável ou matrícula. O vínculo inicia ATIVO, mas usuário bloqueado/não confirmado continua sem acesso. Alteração troca a configuração inteira atomicamente, inclusive ao retirar perfis, para não deixar escopos/concessões incompatíveis. Revogação é terminal; repetir preserva o instante original. Conceder novamente cria novo vínculo, condicionado à ausência de outro ativo. Verificar funcionário do Colaborador, setores do Supervisor e concessões da Contabilidade/DP requer dados autoritativos e as regras da #5.
+Criação exige usuário válido e não encerrado; perfil não é inferido de CPF, empresa responsável ou matrícula. O vínculo inicia ATIVO, mas usuário bloqueado/não confirmado continua sem acesso. Alteração troca a configuração inteira atomicamente, inclusive ao mudar perfil, sem preservar concessões incompatíveis. Revogação é terminal; repetir preserva o instante original. Conceder novamente cria novo vínculo, condicionado à ausência de outro ativo. Verificar funcionário do Colaborador/Supervisor, subordinados diretos e concessões requer dados autoritativos e as regras da #5.
 
-Não há método local que garanta autorizações entre tenants só recebendo IDs do cliente. A avaliação por política precisa da conta/vínculo atuais, ação, empresa e recurso/escopo. A assinatura final e os adaptadores dos quatro perfis pertencem à #5; autoaprovação e acesso a atestados não são concedidos por esta especificação.
+Não há método local que garanta autorizações entre tenants só recebendo IDs do cliente. A avaliação precisa da conta/vínculo atuais, ação, empresa e recurso/escopo. O método `Autorizar`, a interface e os quatro adaptadores estão definidos na #5, que proíbe autoaprovação e vincula acesso ao atestado à capacidade de tratar sua ocorrência. Essas decisões substituem as pendências iniciais, sem autorizar ações extras ainda indefinidas.
 
 ## Unicidade, coordenação e concorrência
 
