@@ -58,6 +58,8 @@ Referências recebidas como entidades permitem verificar localmente empresa, pes
 
 Operações retornam erro para entradas inválidas; nenhuma delas escreve logs com CPF, e-mail ou segredos. Instantes de transição são recebidos explicitamente e precisam ser não zero; não são prova de horário confiável ou auditoria por si.
 
+Implementação da [issue #9](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/9): `Email`, `Nome`, `DataNascimento`, `Perfil` e `ModalidadeColeta` ficam em `services/identity-service/internal/domain/value_object/` (pacote `valueobject`, alias `vo`). Os testes exercitam os construtores e leituras públicos, valores zero e validação; erros usam `ErrValorInvalido` com contexto e sem conteúdo pessoal. `Perfil` expõe `Codigo()` e `Validar()`, conforme os quatro códigos da [especificação de autorização](AUTORIZACAO_IDENTITY_SERVICE.md). Matrícula continua na #10, referência A1 na #11 e ações/configurações/políticas na #14.
+
 ## Empresa
 
 | Campo privado | Tipo | Regra |

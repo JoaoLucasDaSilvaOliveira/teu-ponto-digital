@@ -2,7 +2,9 @@
 
 Identidades de acesso, cadastros de empresas e funcionários e vínculos de autorização do Teu Ponto.
 
-Em desenvolvimento: módulo inicializado com testes de dependências. Domínio, API e persistência seguem o [plano de implementação](../../docs/PLANO_IMPLEMENTACAO_IDENTITY_SERVICE.md).
+Objetos de valor implementados: e-mail, nome, data de nascimento, perfil e modalidade de coleta. As demais entregas seguem o [plano de implementação](../../docs/PLANO_IMPLEMENTACAO_IDENTITY_SERVICE.md).
+
+Os contratos dos valores estão na [especificação do domínio](../../docs/ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md) e na [autorização](../../docs/AUTORIZACAO_IDENTITY_SERVICE.md). E-mail usa `Chave()` para comparação sem distinção de caixa e `String()` para apresentação; sua construção não confirma titularidade. Nascimento recebe uma referência `civil.Date` explícita e não consulta o relógio.
 
 ## Pré-requisitos
 
@@ -17,6 +19,9 @@ Execute em `services/identity-service/`.
 ```bash
 go test ./...
 go test ./test
+go test -race ./...
+go test -cover ./internal/domain/value_object
+go test ./internal/domain/value_object
 go test -v ./test -run '^TestCivil$'
 ```
 
