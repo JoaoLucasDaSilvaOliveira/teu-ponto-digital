@@ -6,7 +6,7 @@ Status: aprovado em 30/10/2026. Esta aprovação autoriza o registro do plano e 
 
 Construir o domínio do primeiro serviço, responsável pelas identidades de acesso, cadastros de empresas e funcionários e vínculos de autorização, preparando o fornecimento de dados a outros serviços. Entregar entidades, objetos de valor, interfaces necessárias, biblioteca própria de matrícula e testes.
 
-API, persistência, login completo, tokens, integrações, upload e armazenamento do A1, biometria, jornadas e cálculos são etapas posteriores. Por orientação do usuário em 02/11/2026, o módulo foi inicializado diretamente em `services/identity-service/`, com testes das dependências adotadas em `test/`; os comandos reais estão no parecer de dependências.
+API, persistência, login completo, tokens, integrações, upload e armazenamento do A1, biometria, jornadas e cálculos são etapas posteriores. Por orientação do usuário em 02/11/2026, o módulo foi inicializado diretamente em `services/identity-service/`, com testes das dependências adotadas em `test/`; os comandos reais e os resultados da inicialização da #7 estão no [README do módulo](../services/identity-service/README.md).
 
 ## Fontes
 
@@ -83,7 +83,7 @@ services/identity-service/
     └── matriculagen/
 ```
 
-Cada objeto de valor tem arquivo próprio, por exemplo `cnpj.go`, `cpf.go`, `birth_date.go` e `matricula.go`, com testes correspondentes. Criar pacotes/interfaces somente com consumidor real. A estrutura futura de `cmd/` e das demais camadas segue o ADR; definir o destino do bootstrap preexistente sem inventar um servidor nesta rodada.
+Cada objeto de valor tem arquivo próprio, por exemplo `cnpj.go`, `cpf.go`, `birth_date.go` e `matricula.go`, com testes correspondentes. Criar pacotes/interfaces somente com consumidor real. Na #7, o bootstrap vazio, já movido para `services/identity-service/cmd/main/main.go`, foi removido por não haver executável nesta etapa. A estrutura futura de `cmd/` e das demais camadas segue o ADR; o bootstrap será criado quando houver comportamento executável a compor.
 
 ## Sequência e backlog
 

@@ -28,3 +28,7 @@ Os [contratos da issue #4](../../../docs/ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.
 ## Avaliação de dependências em 02/11/2026
 
 A [issue #6](../../../docs/DEPENDENCIAS_DOMINIO_IDENTITY_SERVICE.md) fixa `github.com/google/uuid v1.6.0` e o pacote `cloud.google.com/go/civil` do módulo `cloud.google.com/go v0.123.0`. A candidata `github.com/cll0ud/cpfcnpj v0.1.0` foi rejeitada após testes por completar entradas incompletas e aceitar caracteres arbitrários/vazio; CPF/CNPJ serão implementados com biblioteca padrão nos tipos próprios da #8. Essa conclusão substitui sua condição anterior de candidata nesta rodada. Por solicitação do usuário, módulo e hashes foram criados diretamente em `services/identity-service/`, com testes em `test/`, antecipando essa parte da #7. O domínio permanece independente de transporte/persistência.
+
+## Destino do bootstrap na issue #7
+
+Em 02/11/2026, o bootstrap vazio, movido anteriormente de `services/cmd/main/main.go` para `services/identity-service/cmd/main/main.go`, foi removido. Sua única declaração, `package main`, permitia teste/análise, mas falhava no build por não haver função `main`. A etapa de domínio não precisa de executável; o bootstrap será criado no caminho do serviço quando houver comportamento executável e dependências concretas a compor. Isso mantém a organização aceita sem criar servidor fictício. Os comandos e resultados estão no [README do módulo](../../identity-service/README.md).
