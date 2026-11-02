@@ -12,7 +12,7 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Responsável legal**: Pessoa identificada por nome e CPF, designada no cadastro da empresa. Essa condição é distinta de possuir identidade de acesso ou perfil de Gestor.
 
-**Gestor**: Perfil de administração da empresa no CNPJ da conta, incluindo concessão de ações aos demais perfis. Não inclui automaticamente as capacidades próprias do Colaborador nem determina o enquadramento trabalhista da pessoa.
+**Gestor**: Perfil exclusivo de administração da empresa no CNPJ da conta, incluindo concessão de ações aos demais perfis, sem ações próprias de ponto. Não determina o enquadramento trabalhista da pessoa.
 
 **Usuário**: Conta de acesso de uma pessoa em um único CNPJ, com e-mail, confirmação e situação de acesso próprios. Contas com o mesmo e-mail em empresas diferentes são independentes.
 
@@ -26,7 +26,11 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Contabilidade/DP**: Perfil cujo acesso às funcionalidades de cada empresa depende das permissões concedidas por seu gestor.
 
-**Setor**: Agrupamento de funcionários de uma mesma empresa, usado para delimitar o escopo de supervisão.
+**Setor**: Agrupamento organizacional de funcionários de uma mesma empresa. Não determina automaticamente a subordinação a um Supervisor.
+
+**Equipe**: Conjunto de funcionários diretamente atribuídos a um Supervisor no mesmo CNPJ, podendo pertencer a setores distintos.
+
+**Subordinado**: Funcionário atribuído diretamente a um Supervisor no contexto da empresa. Cada funcionário possui no máximo um Supervisor responsável.
 
 **Matrícula interna**: Código aleatório e não sequencial de seis caracteres, com dígitos de 0 a 9 e letras de A a Z em maiúsculas, atribuído pela aplicação ao cadastro do funcionário. Pode ser apresentado no coletor coletivo para declarar a identidade.
 

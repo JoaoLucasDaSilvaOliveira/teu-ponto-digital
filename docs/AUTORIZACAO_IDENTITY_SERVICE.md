@@ -1,6 +1,6 @@
 # Perfis, permissões e escopos — identity-service
 
-Especificação da [issue #5](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/5), parte da issue pai #2. Em elaboração: invariantes comuns e decisões abaixo já foram esclarecidas; representação da equipe, combinação de Gestor com Colaborador e concessões de atestados continuam em esclarecimento. Não representa implementação Go nem autorização de produção.
+Especificação da [issue #5](https://github.com/JoaoLucasDaSilvaOliveira/teu-ponto-digital/issues/5), parte da issue pai #2. Em elaboração: equipe por atribuição direta e exclusividade do Gestor foram confirmadas em 02/11/2026; a separação das concessões de atestados continua em esclarecimento. Não representa implementação Go nem autorização de produção.
 
 Fontes: [RF-01, RF-04, RF-06, RF-06.1, RF-13 e RF-19](REQUISITOS_FUNCIONAIS.md), [contratos da issue #4](ESPECIFICACAO_DOMINIO_IDENTITY_SERVICE.md), [limites](LIMITES_IDENTITY_SERVICE.md), [plano](PLANO_IMPLEMENTACAO_IDENTITY_SERVICE.md), [vocabulário](../CONTEXT.md), ADRs [0004](adr/0004-isolamento-por-cnpj.md) e [0007](adr/0007-contas-por-cnpj-e-recontratacao.md) e [arquitetura do backend](../services/docs/adr/0001-arquitetura-backend.md). A [revisão de coerência](REVISAO_DOCUMENTACAO.md) mantém as lacunas ainda não resolvidas.
 
@@ -23,7 +23,13 @@ Fontes: [RF-01, RF-04, RF-06, RF-06.1, RF-13 e RF-19](REQUISITOS_FUNCIONAIS.md),
 - **Hierarquia de decisões:** Supervisor pode avaliar ajustes de subordinados se autorizado; seu próprio pedido deve ser avaliado por Gestor. Outro perfil ou outra conta da mesma Pessoa não pode ser usado para decidir o próprio pedido. A identidade cadastral da Pessoa e as referências históricas precisam ser consideradas, não apenas comparar IDs de login.
 - **Lançamentos sobre si:** Supervisor não pode lançar/decidir abonos ou outros lançamentos administrativos sobre si, mesmo possuindo concessão sobre subordinados. Solicitar ajuste próprio continua uma ação distinta de avaliá-lo.
 - **Delegação:** Gestor administra acessos e concede ações a Supervisor e Contabilidade/DP no CNPJ. Esses perfis não concedem acesso, não se promovem a Gestor e não delegam suas concessões a terceiros. Responsabilização/auditoria não substitui a verificação prévia do escopo.
-- **Gestor:** o perfil não inclui automaticamente as capacidades próprias de Colaborador. A possibilidade de combinação explícita dos dois perfis está sendo esclarecida; a existência do perfil não dispensa um trabalhador de controle de jornada por si só.
+- **Gestor:** perfil exclusivo, incompatível com Colaborador, Supervisor e Contabilidade/DP na mesma conta. Não concede ações próprias de ponto, solicitação de ajuste ou lançamento de atestado próprio, mesmo que exista cadastro de funcionário associado. Essa decisão de acesso não determina dispensa legal de controle de jornada nem apaga cadastros/histórico. Substitui a possibilidade de combinação de Gestor com Colaborador discutida anteriormente.
+
+### Equipe por atribuição direta
+
+Cada funcionário tem zero ou um Supervisor responsável no CNPJ. Equipe é o conjunto de funcionários atribuídos diretamente a esse Supervisor, podendo atravessar setores. Integrar o mesmo setor não concede acesso automaticamente; mudar o setor não transfere subordinação.
+
+Criar funcionário sob o perfil Supervisor exige concessão específica e já o vincula à sua equipe. Essa capacidade não permite capturar um funcionário existente sem responsável ou de outra equipe. Transferência/atribuição de subordinados existentes exige ação do Gestor; o contrato final identificará a referência de supervisão e suas validações, preservando histórico e isolamento por CNPJ.
 
 CRUD de subordinados não permite apagar registros originais ou histórico. Encerramento de cadastro deve seguir os contratos da #4. Cadastro pessoal e de funcionário não equivale a administrar conta de acesso, vínculo, perfil ou concessão; estas últimas ações permanecem do Gestor. Operações que alterem recursos compartilhados precisam verificar todo o alcance da alteração, sem atingir outra equipe por referência indireta.
 
