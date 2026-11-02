@@ -32,7 +32,7 @@ Vocabulário do controle de jornada e da organização das empresas no produto.
 
 **Subordinado**: Funcionário atribuído diretamente a um Supervisor no contexto da empresa. Cada funcionário possui no máximo um Supervisor responsável.
 
-**Matrícula interna**: Código aleatório e não sequencial de seis caracteres, com dígitos de 0 a 9 e letras de A a Z em maiúsculas, atribuído pela aplicação ao cadastro do funcionário. Pode ser apresentado no coletor coletivo para declarar a identidade.
+**Matrícula interna**: Código aleatório e não sequencial de seis caracteres, com dígitos de 0 a 9 e letras de A a Z em maiúsculas, estável e exclusivo do cadastro do funcionário no CNPJ, inclusive após encerramento. Pode se repetir em outro CNPJ e ser apresentado no coletor coletivo para declarar a identidade, sem constituir fator de autenticação.
 
 **Matrícula da folha**: Código do funcionário no sistema externo de folha, relacionado à matrícula interna por um mapeamento de integração.
 
